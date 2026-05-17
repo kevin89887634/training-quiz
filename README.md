@@ -7,7 +7,7 @@
 ```
 学员 → GitHub Pages (静态 HTML/JS, 题库前端)
          ↓ fetch POST (no-cors)
-       Apps Script Web App (pfa.kefan@gmail.com)
+       Apps Script Web App (pfa.kevinfan@gmail.com)
          ↓ appendRow
        Google Sheet "恒盛培训考试_答卷收集"
          ↓ (Hermes gdrive MCP 后续读取归档)
@@ -40,13 +40,13 @@ gh api -X POST /repos/{owner}/training-quiz/pages \
 
 ### 3. Apps Script 后端
 
-1. 打开 https://script.google.com (用 `pfa.kefan@gmail.com` 登录)
+1. 打开 https://script.google.com (用 `pfa.kevinfan@gmail.com` 登录)
 2. **新建项目** → 把 `apps-script.gs` 内容粘进 `Code.gs`
 3. 顶部菜单 **运行** → 选函数 `testSubmit` → 第一次会要授权 → 查看日志 (Ctrl+Enter) 拿到新建 Spreadsheet 的 ID
 4. 把 ID 填回脚本顶部 `const SHEET_ID = '...'`
 5. **部署** → **新增部署** → 类型 **网页应用**
    - 说明: `training-quiz v1`
-   - 执行身份: 我 (pfa.kefan@...)
+   - 执行身份: 我 (pfa.kevinfan@...)
    - 谁可以访问: **任何人** (重要!)
 6. 复制 **Web 应用 URL** (形如 `https://script.google.com/macros/s/AKfy.../exec`)
 
@@ -114,6 +114,6 @@ GitHub Pages 一分钟内自动更新。
 
 ## 维护
 
-- 数据存在 Google Sheet：`恒盛培训考试_答卷收集` (pfa.kefan@gmail.com 名下)
+- 数据存在 Google Sheet：`恒盛培训考试_答卷收集` (pfa.kevinfan@gmail.com 名下)
 - Vault 镜像：由 Hermes 同步 (待实现 skill 后)
 - 任何前端变更：改文件 → git push → 一分钟生效
