@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>恒盛集团 — 培训考试</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>恒盛集团内部培训</h1>
+      <p class="subtitle" id="course-title">课程加载中...</p>
+    </header>
+
+    <main id="app">
+      <!-- 1. 输入姓名 -->
+      <section id="screen-intro" class="screen">
+        <div class="card">
+          <h2 id="intro-course-title">课程</h2>
+          <p id="intro-desc" class="muted"></p>
+          <ul class="meta">
+            <li>📝 <span id="intro-qcount">-</span> 道题</li>
+            <li>⏱ 预计 <span id="intro-min">-</span> 分钟</li>
+            <li>🎯 通过线 <span id="intro-pass">-</span> 分</li>
+          </ul>
+          <label class="field">
+            <span>请输入你的真实姓名</span>
+            <input type="text" id="student-name" placeholder="例如：张三" autocomplete="off" required>
+          </label>
+          <label class="field">
+            <span>部门 / 团队 (选填)</span>
+            <input type="text" id="student-team" placeholder="例如：销售一部" autocomplete="off">
+          </label>
+          <button id="btn-start" class="primary" disabled>开始答题 →</button>
+        </div>
+      </section>
+
+      <!-- 2. 答题 -->
+      <section id="screen-quiz" class="screen hidden">
+        <div class="quiz-header">
+          <span id="quiz-progress">1 / 10</span>
+          <span id="quiz-student"></span>
+        </div>
+        <div id="quiz-questions"></div>
+        <div class="quiz-footer">
+          <button id="btn-submit" class="primary">提交答卷</button>
+        </div>
+      </section>
+
+      <!-- 3. 结果 -->
+      <section id="screen-result" class="screen hidden">
+        <div class="card center">
+          <div class="score-badge" id="result-badge"></div>
+          <h2 id="result-title">已提交</h2>
+          <p id="result-detail" class="muted"></p>
+          <div id="result-breakdown" class="breakdown"></div>
+          <p class="muted small">完整答卷已收入 Google Sheet，培训部会跟进。</p>
+        </div>
+      </section>
+
+      <!-- 4. 错误 -->
+      <section id="screen-error" class="screen hidden">
+        <div class="card center error">
+          <h2>提交失败</h2>
+          <p id="error-msg" class="muted"></p>
+          <button id="btn-retry" class="primary">重试</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p class="muted small">© 恒盛集团 · 内部培训系统</p>
+    </footer>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
