@@ -4,6 +4,13 @@
 const cfg = window.QUIZ_CONFIG || {};
 const $ = (sel) => document.querySelector(sel);
 
+// 支持 ?course=<id> URL 参数, 默认用 config.js 里的 COURSE_FILE
+const urlParams = new URLSearchParams(location.search);
+const courseParam = urlParams.get('course');
+const courseFile = courseParam
+  ? `courses/${courseParam.replace(/[^a-zA-Z0-9_-]/g, '')}.json`
+  : (cfg.COURSE_FILE || 'courses/iul-coverage.json');
+
 const state = {
   course: null,
   student: { name: '', team: '' },
@@ -14,8 +21,8 @@ const state = {
 // ---------- Load course ----------
 async function loadCourse() {
   try {
-    const resp = await fetch(cfg.COURSE_FILE + '?t=' + Date.now(), { cache: 'no-store' });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const resp = await fetch(courseFile + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — 课程文件 ${courseFile} 找不到`);
     state.course = await resp.json();
     renderIntro();
   } catch (err) {
