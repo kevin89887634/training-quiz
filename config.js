@@ -3,6 +3,6 @@
 //    部署步骤见 README.md → "Apps Script 部署"
 // 2. COURSE_FILE: 题库 JSON 文件名 (在 courses/ 目录下)
 window.QUIZ_CONFIG = {
-  APPS_SCRIPT_URL: "REPLACE_ME_AFTER_DEPLOY",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwmlXLg2HyfZml4Prx1RJraTwtdHD37xTkY440vkrJ530KGyPFyRHxv9bPaJoH9ZkoW/exec",
   COURSE_FILE: "courses/iul-coverage.json"
 };

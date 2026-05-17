@@ -1,22 +1,17 @@
 /**
  * 恒盛培训考试 — 答卷收集 (Google Apps Script 后端)
  *
- * 部署步骤:
- * 1. 打开 https://script.google.com → 新项目 (用 pfa.kefan@gmail.com 登录)
- * 2. 粘贴这整个文件
- * 3. 改下面 SHEET_ID (留空则脚本自动新建 spreadsheet 并 log 出 ID)
- * 4. "部署" → "新增部署" → 类型选"网页应用"
- *    - 执行身份: 我 (pfa.kefan)
- *    - 谁可以访问: **任何人** (无需登录, 学员答题用)
- * 5. 复制部署出来的 "Web 应用 URL" 填到 config.js 的 APPS_SCRIPT_URL
+ * v2: 全自动 — 首次 POST 自动建 Spreadsheet, ID 存 PropertiesService 持久化.
+ * 不用手动跑 testSubmit, 不用手动填 SHEET_ID.
  *
- * 数据结构: Sheet 列
- *   timestamp | course_id | course_title | student_name | student_team |
- *   score | passed | correct/total | started_at | submitted_at | answers_json
+ * 部署: clasp deploy --description "training-quiz v1" --type webapp
+ *   或网页 deploy → 类型"网页应用" / 执行身份 我 / 任何人可访问
+ *
+ * 数据存:
+ *   - Sheet: "恒盛培训考试_答卷收集" (Drive 根目录, pfa.kevinfan@gmail.com)
+ *   - Sheet ID 记在 Script Properties (key=SHEET_ID), 自动持久化
  */
 
-// 留空则首次跑会自动新建并 log SHEET ID, 第二次再粘贴回这里
-const SHEET_ID = '';
 const SHEET_NAME = '答卷';
 const HEADERS = [
   'timestamp', 'course_id', 'course_title', 'course_version',
@@ -56,21 +51,28 @@ function doPost(e) {
 }
 
 function doGet(e) {
-  // 给浏览器手动访问留个 health 提示
-  return ContentService
-    .createTextOutput('恒盛培训考试 — Apps Script 端点正常运行\n请通过 POST 提交答卷')
-    .setMimeType(ContentService.MimeType.TEXT);
+  // 健康检查 / 浏览器手动访问留个提示
+  const props = PropertiesService.getScriptProperties();
+  const sid = props.getProperty('SHEET_ID');
+  const msg = '恒盛培训考试 — Apps Script 端点运行中\n' +
+              (sid ? 'Sheet: https://docs.google.com/spreadsheets/d/' + sid : '尚未收到答卷,Sheet 待首次提交时自动建') +
+              '\n通过 POST JSON 提交答卷';
+  return ContentService.createTextOutput(msg).setMimeType(ContentService.MimeType.TEXT);
 }
 
 function getOrCreateSheet() {
-  let ss;
-  if (SHEET_ID) {
-    ss = SpreadsheetApp.openById(SHEET_ID);
-  } else {
+  const props = PropertiesService.getScriptProperties();
+  let sid = props.getProperty('SHEET_ID');
+  let ss = null;
+  if (sid) {
+    try { ss = SpreadsheetApp.openById(sid); }
+    catch (e) { sid = null; ss = null; }
+  }
+  if (!ss) {
     ss = SpreadsheetApp.create('恒盛培训考试_答卷收集');
-    Logger.log('==== 新建 Spreadsheet, 把这个 ID 填回脚本顶部 SHEET_ID ====');
-    Logger.log(ss.getId());
-    Logger.log('链接: ' + ss.getUrl());
+    sid = ss.getId();
+    props.setProperty('SHEET_ID', sid);
+    Logger.log('Created new spreadsheet: ' + sid);
   }
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
@@ -82,25 +84,20 @@ function getOrCreateSheet() {
   return sheet;
 }
 
-// 测试用: 在 Apps Script 编辑器里点"运行" → testSubmit 看链路是否通
+// 可选测试: 在 Apps Script 编辑器里运行确认链路
 function testSubmit() {
   const fake = {
     postData: {
       contents: JSON.stringify({
-        course_id: 'test',
-        course_title: '测试课程',
-        student_name: '测试用户',
-        student_team: '测试组',
-        score: 80,
-        passed: true,
-        correct_count: 8,
-        total_questions: 10,
+        course_id: 'test', course_title: '测试课程', course_version: '0',
+        student_name: '测试用户', student_team: '测试组',
+        score: 80, passed: true, correct_count: 8, total_questions: 10,
         started_at: new Date().toISOString(),
         submitted_at: new Date().toISOString(),
         answers: [{ id: 1, is_correct: true }]
       })
     }
   };
-  const r = doPost(fake);
-  Logger.log(r.getContent());
+  Logger.log(doPost(fake).getContent());
+  Logger.log('Sheet ID: ' + PropertiesService.getScriptProperties().getProperty('SHEET_ID'));
 }
