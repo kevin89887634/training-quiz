@@ -134,6 +134,26 @@ button.primary:disabled { background: #93c5fd; cursor: not-allowed; }
   background: #eff6ff;
   border-color: var(--primary);
 }
+/* 提交后 — 正确答案 */
+.option.correct {
+  background: #f0fdf4;
+  border-color: var(--success);
+}
+/* 提交后 — 错误答案 */
+.option.wrong {
+  background: #fef2f2;
+  border-color: var(--error);
+}
+/* 提交后 — 用户选中的错误答案 */
+.option.wrong-user {
+  background: #fee2e2;
+  border-color: var(--error);
+}
+/* 提交后 — 用户选中且正确 */
+.option.correct-user {
+  background: #f0fdf4;
+  border-color: var(--success);
+}
 
 .quiz-footer {
   position: sticky;
@@ -157,19 +177,64 @@ button.primary:disabled { background: #93c5fd; cursor: not-allowed; }
 .score-badge.pass { background: #dcfce7; color: var(--success); }
 .score-badge.fail { background: #fee2e2; color: var(--error); }
 
-.breakdown {
-  text-align: left;
-  margin: 16px 0;
+/* 解析卡片 */
+.explain-card {
+  margin-top: 10px;
   padding: 12px 16px;
-  background: #f9fafb;
   border-radius: 8px;
   font-size: 14px;
+  line-height: 1.7;
 }
-.breakdown .item {
+.explain-card.ok {
+  background: #f0fdf4;
+  border-left: 4px solid var(--success);
+  color: #166534;
+}
+.explain-card.no {
+  background: #fef9ec;
+  border-left: 4px solid var(--warn);
+  color: #92400e;
+}
+.explain-card strong { font-weight: 600; }
+
+/* 错题重考按钮 */
+.retake-bar {
   display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
+  gap: 12px;
+  margin-top: 16px;
 }
+.retake-bar button {
+  flex: 1;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px;
+}
+.retake-bar .btn-retry-all {
+  background: var(--primary);
+  color: #fff;
+}
+.retake-bar .btn-retry-wrong {
+  background: #fff;
+  color: var(--warn);
+  border: 2px solid var(--warn);
+}
+.retake-bar .btn-retry-wrong:hover {
+  background: #fff7ed;
+}
+
+/* 错题再考模式提示 */
+.retake-notice {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #9a3412;
+  text-align: center;
+}
+.retake-notice span { font-weight: 600; }
 
 footer {
   margin-top: 40px;

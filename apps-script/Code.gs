@@ -21,9 +21,18 @@ const HEADERS = [
 ];
 
 // v3: 同 (student_name, course_id) 重复答题 → 只保留最高分, 旧的标 'SUPERSEDED'
+// v6 (2026-05-17): 重新整合 Calendar create_event (Google 锁 web app access 在 UI, 拆独立项目走不通)
+//                  此项目实际是 "training-quiz-backend + voice-to-crm-calendar-bridge" 混合
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
+
+    // 路由分发
+    if (data.action === 'create_event') {
+      return handleCreateEvent(data);
+    }
+
+    // 默认: quiz 答卷收集
     const sheet = getOrCreateSheet();
     const newScore = Number(data.score) || 0;
     const key = (data.student_name || '').trim() + '||' + (data.course_id || '');
@@ -85,10 +94,59 @@ function doPost(e) {
   }
 }
 
+// ─── Voice-to-CRM Calendar 集成 (POST action=create_event) ───
+// 重新引入 (v6, 2026-05-17): 独立项目拆出去后发现 Google web app access 锁 UI 走不通, 回归混合
+function handleCreateEvent(data) {
+  try {
+    if (!data.title || !data.start_iso) throw new Error('title 和 start_iso 必填');
+    const start = new Date(data.start_iso.replace(' ', 'T'));
+    if (isNaN(start.getTime())) throw new Error('start_iso 无效: ' + data.start_iso);
+    const durationMin = Number(data.duration_min) || 30;
+    const end = new Date(start.getTime() + durationMin * 60 * 1000);
+    const cal = CalendarApp.getDefaultCalendar();
+    const opts = { description: data.description || '' };
+    if (data.attendees && Array.isArray(data.attendees) && data.attendees.length) {
+      opts.guests = data.attendees.join(',');
+      opts.sendInvites = false;
+    }
+    const ev = cal.createEvent(data.title, start, end, opts);
+    const evId = ev.getId();
+    const evUrl = 'https://www.google.com/calendar/event?eid=' +
+                  Utilities.base64Encode(evId + ' ' + cal.getId())
+                    .replace(/=+$/, '').replace(/\//g, '_').replace(/\+/g, '-');
+    const result = {
+      ok: true, event_id: evId, title: ev.getTitle(),
+      start: ev.getStartTime().toISOString(), end: ev.getEndTime().toISOString(),
+      url: evUrl,
+    };
+    PropertiesService.getScriptProperties().setProperty('LAST_EVENT', JSON.stringify(result));
+    return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    Logger.log('Calendar Error: ' + err.toString());
+    return ContentService.createTextOutput(JSON.stringify({ok:false, error: err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// 在 Apps Script 编辑器手动 Run 一次, 弹 Calendar scope 授权
+function testCreateCalendarEvent() {
+  const r = handleCreateEvent({
+    action: 'create_event',
+    title: '🤖 Voice-to-CRM Calendar 授权测试 (可删)',
+    start_iso: '2026-05-25 10:30',
+    duration_min: 15,
+    description: '此事件由 testCreateCalendarEvent 创建, 仅为 Calendar scope 授权. 可删.',
+  });
+  Logger.log(r.getContent());
+}
+
 function doGet(e) {
   const action = (e && e.parameter && e.parameter.action) || '';
   if (action === 'summary') return doGetSummary(e);
   if (action === 'recent') return doGetRecent(e);
+  if (action === 'last_event') {
+    const v = PropertiesService.getScriptProperties().getProperty('LAST_EVENT') || '{"ok":false,"msg":"无 last_event"}';
+    return ContentService.createTextOutput(v).setMimeType(ContentService.MimeType.JSON);
+  }
   if (action === 'analytics') return doGetAnalytics(e);
 
   // 健康检查
@@ -358,6 +416,23 @@ function getOrCreateSheet() {
     sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
   }
   return sheet;
+}
+
+// v4: 在 Apps Script 编辑器手动 Run 这个一次, 会弹 CalendarApp 授权
+function testCreateEvent() {
+  const fake = {
+    postData: {
+      contents: JSON.stringify({
+        action: 'create_event',
+        title: '🤖 Voice-to-CRM 授权测试 (可删)',
+        start_iso: '2026-05-25 10:00',
+        duration_min: 15,
+        description: '此事件由 testCreateEvent 函数创建, 仅为授权 CalendarApp scope. 可手动删除.',
+      })
+    }
+  };
+  const r = handleCreateEvent(JSON.parse(fake.postData.contents));
+  Logger.log(r.getContent());
 }
 
 // 可选测试: 在 Apps Script 编辑器里运行确认链路
