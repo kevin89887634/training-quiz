@@ -1,5 +1,5 @@
 /**
- * 恒盛培训考试 — 答卷收集 (Google Apps Script 后端)
+ * 恒晟培训考试 — 答卷收集 (Google Apps Script 后端)
  *
  * v2: 全自动 — 首次 POST 自动建 Spreadsheet, ID 存 PropertiesService 持久化.
  * 不用手动跑 testSubmit, 不用手动填 SHEET_ID.
@@ -8,7 +8,7 @@
  *   或网页 deploy → 类型"网页应用" / 执行身份 我 / 任何人可访问
  *
  * 数据存:
- *   - Sheet: "恒盛培训考试_答卷收集" (Drive 根目录, pfa.kevinfan@gmail.com)
+ *   - Sheet: "恒晟培训考试_答卷收集" (Drive 根目录, pfa.kevinfan@gmail.com)
  *   - Sheet ID 记在 Script Properties (key=SHEET_ID), 自动持久化
  */
 
@@ -152,7 +152,7 @@ function doGet(e) {
   // 健康检查
   const props = PropertiesService.getScriptProperties();
   const sid = props.getProperty('SHEET_ID');
-  const msg = '恒盛培训考试 — Apps Script 端点运行中\n' +
+  const msg = '恒晟培训考试 — Apps Script 端点运行中\n' +
               (sid ? 'Sheet: https://docs.google.com/spreadsheets/d/' + sid : '尚未收到答卷,Sheet 待首次提交时自动建') +
               '\n通过 POST JSON 提交答卷\n查询: ?action=summary | ?action=recent&limit=N | ?action=analytics[&course_id=X]';
   return ContentService.createTextOutput(msg).setMimeType(ContentService.MimeType.TEXT);
@@ -403,7 +403,7 @@ function getOrCreateSheet() {
     catch (e) { sid = null; ss = null; }
   }
   if (!ss) {
-    ss = SpreadsheetApp.create('恒盛培训考试_答卷收集');
+    ss = SpreadsheetApp.create('恒晟培训考试_答卷收集');
     sid = ss.getId();
     props.setProperty('SHEET_ID', sid);
     Logger.log('Created new spreadsheet: ' + sid);

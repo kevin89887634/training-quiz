@@ -1,4 +1,4 @@
-# 恒盛培训考试 (training-quiz)
+# 恒晟培训考试 (training-quiz)
 
 简单、免费、可扩展的内部培训考试系统。学员不用登录，只填名字就能答题；答卷自动入 Google Sheet。
 
@@ -9,7 +9,7 @@
          ↓ fetch POST (no-cors)
        Apps Script Web App (pfa.kefan@gmail.com)
          ↓ appendRow
-       Google Sheet "恒盛培训考试_答卷收集"
+       Google Sheet "恒晟培训考试_答卷收集"
          ↓ (Hermes gdrive MCP 后续读取归档)
        Obsidian Vault: 02_保险知识/培训体系/考试结果/
 ```
@@ -114,6 +114,6 @@ GitHub Pages 一分钟内自动更新。
 
 ## 维护
 
-- 数据存在 Google Sheet：`恒盛培训考试_答卷收集` (pfa.kefan@gmail.com 名下)
+- 数据存在 Google Sheet：`恒晟培训考试_答卷收集` (pfa.kefan@gmail.com 名下)
 - Vault 镜像：由 Hermes 同步 (待实现 skill 后)
 - 任何前端变更：改文件 → git push → 一分钟生效
