@@ -11,6 +11,33 @@ const courseFile = courseParam
   ? `courses/${courseParam.replace(/[^a-zA-Z0-9_-]/g, '')}.json`
   : (cfg.COURSE_FILE || 'courses/iul-coverage.json');
 
+// ---------- 主题切换 (黑白两种显示) ----------
+const THEME_KEY = 'hengsheng-quiz-theme';
+function getTheme() {
+  try { return localStorage.getItem(THEME_KEY) || 'light'; } catch { return 'light'; }
+}
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  const btn = $('#theme-toggle');
+  if (btn) {
+    btn.innerHTML = theme === 'dark'
+      ? '<span class="icon">☀️</span><span>浅色</span>'
+      : '<span class="icon">🌙</span><span>深色</span>';
+    btn.setAttribute('aria-label', theme === 'dark' ? '切换到浅色模式' : '切换到深色模式');
+  }
+}
+function toggleTheme() {
+  const next = getTheme() === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem(THEME_KEY, next); } catch {}
+  applyTheme(next);
+}
+// 尽早应用主题, 避免 FOUC (Flash of Unstyled Content)
+applyTheme(getTheme());
+
 const state = {
   course: null,
   student: { name: '', team: '' },
@@ -47,6 +74,8 @@ function renderIntro() {
 const nameInput = $('#student-name');
 const teamInput = $('#student-team');
 const btnStart = $('#btn-start');
+const btnTheme = $('#theme-toggle');
+if (btnTheme) btnTheme.addEventListener('click', toggleTheme);
 
 function validateIntro() {
   btnStart.disabled = nameInput.value.trim().length < 2;

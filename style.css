@@ -1,16 +1,42 @@
-/* 恒晟培训考试 — 简洁专业 */
+/* 恒晟培训考试 — 简洁专业 + 黑白双主题 */
 :root {
-  --bg: #f5f7fa;
-  --card: #fff;
-  --text: #1f2937;
+  /* 默认浅色 (Light) */
+  --bg: #ffffff;
+  --card: #f7f7f7;
+  --card-2: #ebebeb;
+  --text: #111111;
+  --text-2: #444444;
   --muted: #6b7280;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary: #111111;
+  --primary-hover: #333333;
+  --primary-fg: #ffffff;
   --success: #16a34a;
   --warn: #ea580c;
   --error: #dc2626;
-  --border: #e5e7eb;
+  --border: #d4d4d4;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  --code-bg: #f0f0f0;
 }
+
+/* 深色 (Dark) */
+:root[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --card: #1a1a1a;
+  --card-2: #2a2a2a;
+  --text: #f5f5f5;
+  --text-2: #c5c5c5;
+  --muted: #9ca3af;
+  --primary: #f5f5f5;
+  --primary-hover: #d4d4d4;
+  --primary-fg: #0a0a0a;
+  --success: #22c55e;
+  --warn: #fb923c;
+  --error: #f87171;
+  --border: #333333;
+  --shadow: 0 1px 3px rgba(255,255,255,0.05);
+  --code-bg: #1f1f1f;
+}
+
 * { box-sizing: border-box; }
 body {
   margin: 0;
@@ -18,24 +44,48 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .container {
   max-width: 760px;
   margin: 0 auto;
   padding: 24px 16px 80px;
 }
-header { text-align: center; padding: 24px 0 16px; }
+header { text-align: center; padding: 24px 0 16px; position: relative; }
 header h1 { margin: 0 0 4px; font-size: 28px; }
 .subtitle { color: var(--muted); margin: 0; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
 
+/* 主题切换按钮 */
+.theme-toggle {
+  position: absolute;
+  top: 24px;
+  right: 0;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover {
+  background: var(--border);
+}
+.theme-toggle .icon { font-size: 14px; line-height: 1; }
+
 .card {
   background: var(--card);
   border-radius: 12px;
   padding: 28px 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow);
   border: 1px solid var(--border);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 .card.center { text-align: center; }
 .card.error h2 { color: var(--error); }
@@ -48,195 +98,209 @@ header h1 { margin: 0 0 4px; font-size: 28px; }
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  font-size: 14px;
-  color: var(--muted);
+  justify-content: center;
 }
+.meta li { color: var(--muted); font-size: 14px; }
+.meta li b { color: var(--text); font-weight: 600; }
 
 .field {
-  display: block;
   margin: 16px 0;
+  text-align: left;
 }
-.field > span {
+.field label {
   display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
 }
 .field input {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 16px;
+  padding: 10px 14px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  outline: none;
-}
-.field input:focus { border-color: var(--primary); }
-
-button {
-  font-size: 16px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-}
-button.primary {
-  background: var(--primary);
-  color: #fff;
-  width: 100%;
-}
-button.primary:hover { background: var(--primary-hover); }
-button.primary:disabled { background: #93c5fd; cursor: not-allowed; }
-
-.quiz-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 8px 4px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.question {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-bottom: 16px;
-  border: 1px solid var(--border);
-}
-.question h3 {
-  font-size: 16px;
-  margin: 0 0 12px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-.question .qtype {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: normal;
-  margin-left: 8px;
-}
-.option {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 12px;
-  margin: 6px 0;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.option:hover { background: #f9fafb; }
-.option input { margin-top: 4px; flex-shrink: 0; }
-.option.selected {
-  background: #eff6ff;
-  border-color: var(--primary);
-}
-/* 提交后 — 正确答案 */
-.option.correct {
-  background: #f0fdf4;
-  border-color: var(--success);
-}
-/* 提交后 — 错误答案 */
-.option.wrong {
-  background: #fef2f2;
-  border-color: var(--error);
-}
-/* 提交后 — 用户选中的错误答案 */
-.option.wrong-user {
-  background: #fee2e2;
-  border-color: var(--error);
-}
-/* 提交后 — 用户选中且正确 */
-.option.correct-user {
-  background: #f0fdf4;
-  border-color: var(--success);
-}
-
-.quiz-footer {
-  position: sticky;
-  bottom: 0;
+  font-size: 15px;
   background: var(--bg);
-  padding: 12px 0;
-  margin-top: 24px;
+  color: var(--text);
+  transition: border-color 0.15s ease;
 }
+.field input:focus { border-color: var(--text); outline: none; }
 
-.score-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-.score-badge.pass { background: #dcfce7; color: var(--success); }
-.score-badge.fail { background: #fee2e2; color: var(--error); }
-
-/* 解析卡片 */
-.explain-card {
-  margin-top: 10px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.explain-card.ok {
-  background: #f0fdf4;
-  border-left: 4px solid var(--success);
-  color: #166534;
-}
-.explain-card.no {
-  background: #fef9ec;
-  border-left: 4px solid var(--warn);
-  color: #92400e;
-}
-.explain-card strong { font-weight: 600; }
-
-/* 错题重考按钮 */
-.retake-bar {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-.retake-bar button {
-  flex: 1;
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border: none;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
-  padding: 14px;
-}
-.retake-bar .btn-retry-all {
+  cursor: pointer;
   background: var(--primary);
-  color: #fff;
+  color: var(--primary-fg);
+  transition: background 0.15s ease, transform 0.05s ease;
 }
-.retake-bar .btn-retry-wrong {
-  background: #fff;
-  color: var(--warn);
-  border: 2px solid var(--warn);
+.btn:hover { background: var(--primary-hover); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { background: var(--muted); cursor: not-allowed; }
+.btn-secondary {
+  background: var(--card-2);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
-.retake-bar .btn-retry-wrong:hover {
-  background: #fff7ed;
+.btn-secondary:hover { background: var(--border); }
+
+.qnum {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.qstem {
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 8px 0 20px;
+  font-weight: 500;
+  color: var(--text);
+}
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.opt:hover { background: var(--card-2); }
+.opt.selected {
+  background: var(--card-2);
+  border-color: var(--text);
+}
+.opt .marker {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--muted);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 1px;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+.opt.multi .marker { border-radius: 4px; }
+.opt.selected .marker {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--primary-fg);
+}
+.opt .text {
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
 }
 
-/* 错题再考模式提示 */
-.retake-notice {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
+.explain {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--card-2);
+  border-left: 3px solid var(--text);
+  border-radius: 6px;
   font-size: 14px;
-  color: #9a3412;
+  line-height: 1.7;
+  color: var(--text-2);
+}
+.explain b { color: var(--text); }
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.progress .bar {
+  flex: 1;
+  height: 4px;
+  background: var(--card-2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress .fill {
+  height: 100%;
+  background: var(--text);
+  transition: width 0.2s ease;
+}
+
+.qnav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 12px;
+}
+.qnav .btn { flex: 0 0 auto; min-width: 100px; }
+
+.result-summary {
+  display: flex;
+  justify-content: space-around;
+  margin: 24px 0;
   text-align: center;
 }
-.retake-notice span { font-weight: 600; }
+.result-summary div { padding: 12px; }
+.result-summary .big {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+  display: block;
+}
+.result-summary .label {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wrong-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+.wrong-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.wrong-list li:last-child { border-bottom: none; }
+
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.92em;
+  color: var(--text);
+}
+
+.intro-tag {
+  display: inline-block;
+  background: var(--text);
+  color: var(--primary-fg);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
 
 footer {
-  margin-top: 40px;
   text-align: center;
+  padding: 24px 0;
+  color: var(--muted);
+  font-size: 12px;
 }
+footer a { color: var(--muted); text-decoration: underline; }
