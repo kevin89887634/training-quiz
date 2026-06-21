@@ -161,7 +161,8 @@ header h1 { margin: 0 0 4px; font-size: 28px; }
   font-weight: 500;
   color: var(--text);
 }
-.opt {
+/* 答题页选项 + 结果页答案解析 — class 名对齐 quiz.js */
+.option {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -173,12 +174,26 @@ header h1 { margin: 0 0 4px; font-size: 28px; }
   background: var(--bg);
   transition: background 0.12s ease, border-color 0.12s ease;
 }
-.opt:hover { background: var(--card-2); }
-.opt.selected {
+.option:hover { background: var(--card-2); }
+.option.selected {
   background: var(--card-2);
   border-color: var(--text);
 }
-.opt .marker {
+/* 结果页答案颜色标注 */
+.option.correct {
+  background: color-mix(in srgb, var(--success) 12%, var(--bg));
+  border-color: var(--success);
+}
+.option.wrong-user {
+  background: color-mix(in srgb, var(--error) 12%, var(--bg));
+  border-color: var(--error);
+}
+.option.correct-user {
+  background: color-mix(in srgb, var(--success) 12%, var(--bg));
+  border-color: var(--success);
+  font-weight: 600;
+}
+.option .marker {
   flex-shrink: 0;
   width: 22px; height: 22px;
   border: 1.5px solid var(--muted);
@@ -192,20 +207,15 @@ header h1 { margin: 0 0 4px; font-size: 28px; }
   margin-top: 1px;
   transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
 }
-.opt.multi .marker { border-radius: 4px; }
-.opt.selected .marker {
+.option.multi .marker { border-radius: 4px; }
+.option.selected .marker {
   border-color: var(--text);
   background: var(--text);
   color: var(--primary-fg);
 }
-.opt .text {
-  flex: 1;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text);
-}
 
-.explain {
+/* 答案解析卡片 — class 名对齐 quiz.js (explain-card) */
+.explain-card {
   margin-top: 16px;
   padding: 14px 16px;
   background: var(--card-2);
@@ -215,7 +225,16 @@ header h1 { margin: 0 0 4px; font-size: 28px; }
   line-height: 1.7;
   color: var(--text-2);
 }
-.explain b { color: var(--text); }
+.explain-card b { color: var(--text); }
+.explain-card.ok {
+  border-left-color: var(--success);
+  background: color-mix(in srgb, var(--success) 8%, var(--card-2));
+}
+.explain-card.no {
+  border-left-color: var(--error);
+  background: color-mix(in srgb, var(--error) 8%, var(--card-2));
+}
+.explain-card strong { color: var(--text); }
 
 .progress {
   display: flex;
